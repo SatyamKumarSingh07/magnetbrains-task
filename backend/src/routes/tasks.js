@@ -1,23 +1,14 @@
-const express = require('express');
-const { body, param } = require('express-validator');
-const auth = require('../middlewares/authMiddleware');
-const {
-  listTasks,
-  createTask,
-  getTask,
-  updateTask,
-  deleteTask,
-  patchStatus,
-  patchPriority
-} = require('../controllers/taskController');
+const express = require('express')
+const { body } = require('express-validator')
+const auth = require('../middlewares/authMiddleware')
+const ctrl = require('../controllers/taskController')
 
-const router = express.Router();
+const router = express.Router()
 
-// all routes protected
-router.use(auth);
+router.use(auth)
 
 // list / create
-router.get('/', listTasks);
+router.get('/', ctrl.listTasks)
 router.post('/',
   [
     body('title').notEmpty().withMessage('Title required'),
@@ -25,11 +16,11 @@ router.post('/',
     body('status').optional().isIn(['PENDING','COMPLETED']),
     body('dueDate').optional().isISO8601().toDate()
   ],
-  createTask
-);
+  ctrl.createTask
+)
 
 // specific task
-router.get('/:id', getTask);
+router.get('/:id', ctrl.getTask)
 router.put('/:id',
   [
     body('title').optional().notEmpty(),
@@ -37,13 +28,13 @@ router.put('/:id',
     body('status').optional().isIn(['PENDING','COMPLETED']),
     body('dueDate').optional().isISO8601().toDate()
   ],
-  updateTask
-);
+  ctrl.updateTask
+)
 
-router.delete('/:id', deleteTask);
+router.delete('/:id', ctrl.deleteTask)
 
 // quick patches
-router.patch('/:id/status', [ body('status').exists() ], patchStatus);
-router.patch('/:id/priority', [ body('priority').exists() ], patchPriority);
+router.patch('/:id/status', [ body('status').exists() ], ctrl.patchStatus)
+router.patch('/:id/priority', [ body('priority').exists() ], ctrl.patchPriority)
 
-module.exports = router;
+module.exports = router

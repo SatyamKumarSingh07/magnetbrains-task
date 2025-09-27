@@ -1,25 +1,30 @@
 // frontend/src/utils/auth.js
-export function saveAuth({ token, user }) {
-  if (token) localStorage.setItem('token', token);
-  if (user) localStorage.setItem('user', JSON.stringify(user));
+export function saveAuth(payload) {
+  // payload: { token, user }
+  localStorage.setItem('auth', JSON.stringify(payload))
 }
 
-export function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  // redirect to login
-  window.location.href = '/login';
+export function clearAuth() {
+  localStorage.removeItem('auth')
 }
 
-export function getUser() {
+export function getAuth() {
   try {
-    const raw = localStorage.getItem('user');
-    return raw ? JSON.parse(raw) : null;
-  } catch (e) {
-    return null;
-  }
+    return JSON.parse(localStorage.getItem('auth'))
+  } catch { return null }
 }
 
 export function getToken() {
-  return localStorage.getItem('token');
+  const a = getAuth()
+  return a?.token || null
+}
+
+export function getUser() {
+  const a = getAuth()
+  return a?.user || null
+}
+
+export function logout() {
+  clearAuth()
+  window.location.href = '/login'
 }

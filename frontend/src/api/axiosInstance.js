@@ -1,15 +1,18 @@
 // frontend/src/api/axiosInstance.js
 import axios from 'axios'
 
-const inst = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
-  // withCredentials: true // uncomment only if you use cookie auth
-})
+const base = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+const inst = axios.create({ baseURL: base })
 
 inst.interceptors.request.use(cfg => {
-  const token = localStorage.getItem('token') || sessionStorage.getItem('token')
-  if (token) cfg.headers.Authorization = `Bearer ${token}`
+  const tokenStr = localStorage.getItem('auth')
+  if (tokenStr) {
+    try {
+      const auth = JSON.parse(tokenStr)
+      if (auth?.token) cfg.headers.Authorization = `Bearer ${auth.token}`
+    } catch {}
+  }
   return cfg
-}, err => Promise.reject(err))
+}, e => Promise.reject(e))
 
 export default inst
