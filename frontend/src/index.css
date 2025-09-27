@@ -1,1 +1,7 @@
 @import "tailwindcss";
+/* index.css */
+@keyframes toast-in {
+  from { transform: translateY(-8px); opacity: 0 }
+  to { transform: translateY(0); opacity: 1 }
+}
+.fixed-toast { animation: toast-in 220ms ease both; }
